@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.mainContainer {
+  @apply text-center h-screen w-screen overflow-hidden;
+
+  .table {
+    @apply flex flex-col flex-1 border-b h-full overflow-hidden;
+
+    .col {
+      @apply col-span-3 p-3;
+
+      &:first-child {
+        @apply col-span-1;
+      }
+
+      &:nth-child(2) {
+        @apply col-span-1;
+      }
+
+      &:last-child {
+        @apply col-span-1;
+      }
+    }
+
+    &Header {
+      @apply h-[52px] grid grid-cols-12 grid-flow-col;
+
+      .col {
+        @apply border-b-4;
+      }
+    }
+
+    &Body {
+      @apply overflow-auto;
+      &Row {
+        @apply grid grid-cols-12 grid-flow-col border-b border-b-2;
+
+        &.active {
+          @apply bg-red-600 border-red-600 text-white;
+        }
+        .col {
+          &:last-child {
+            @apply border-none;
+          }
+        }
+      }
+    }
+    
+    &Footer {
+      @apply h-[52px];
+    }
+  }
+}
