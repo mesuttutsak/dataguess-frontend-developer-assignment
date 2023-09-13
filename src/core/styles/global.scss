@@ -2,14 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --defaultColors-odd: ;
+  --defaultColors-even: ;
+  --activeColors-odd: ;
+  --activeColors-even: ;
+}
 
 body {
+  @apply text-center text-sm;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Arial, Helvetica, sans-serif
 }
 
 code {
@@ -18,18 +21,18 @@ code {
 }
 
 main {
-  @apply text-center h-screen w-screen overflow-hidden;
+  @apply text-center h-screen w-screen overflow-auto;
 }
 
 .mainContainer {
-  @apply container m-auto;
+  @apply flex container mx-auto h-full w-full sm:px-5;
+
+  & > * {
+    @apply w-full;
+  }
 
   .table {
-    @apply flex flex-col flex-1 h-full overflow-hidden;
-
-    &Container {
-      @apply rounded-lg shadow-lg;
-    }
+    @apply flex flex-col flex-1 h-full border-y border-[#49494996] overflow-hidden min-w-[768px];
 
     .col {
       @apply col-span-3 text-start truncate p-3;
@@ -47,24 +50,43 @@ main {
       }
     }
 
+    &Container {
+      @apply flex flex-col flex-auto sm:max-h-[95vh] sm:m-auto rounded-lg shadow-lg bg-[var(--defaultColors-odd)] border border-slate-100 overflow-auto;
+    }
+
+
+    &Wrap {
+      @apply h-full sm:h-fit flex overflow-auto;
+    }
+
     &Headline {
       @apply flex flex-row justify-between py-3 px-4;
     }
 
     &Header {
-      @apply px-2 h-[52px] bg-slate-300 grid grid-cols-12 grid-flow-col;
+      @apply px-2 bg-[#b7bcb5] border-b border-[#49494996] grid grid-cols-12 grid-flow-col;
 
       .col {}
     }
 
     &Body {
       @apply overflow-auto;
+
       &Row {
-        @apply grid grid-cols-12 grid-flow-col border-b overflow-hidden border-b-2 cursor-pointer px-2;
+        @apply grid grid-cols-12 grid-flow-col border-b border-b-[#e7eae796] bg-[var(--defaultColors-even)] overflow-hidden cursor-pointer px-2;
+
+        &:nth-child(odd) {
+          @apply bg-[var(--defaultColors-odd)];
+        }
 
         &.active {
-          @apply bg-red-600 text-white;
+          @apply bg-[var(--activeColors-even)];
+
+          &:nth-child(odd) {
+            @apply bg-[var(--activeColors-odd)];
+          }
         }
+
         .col {
           &:last-child {
             @apply border-none;
@@ -72,7 +94,7 @@ main {
         }
       }
     }
-    
+
     &Footer {
       @apply h-[52px] flex items-center justify-center gap-4;
     }
@@ -80,8 +102,22 @@ main {
 }
 
 button {
-  @apply flex items-center justify-center bg-slate-400 text-slate-100 py-1 px-2 rounded;
+  @apply flex items-center justify-center text-slate-600 rounded;
+
   &:disabled {
     @apply opacity-50 cursor-not-allowed;
+  }
+}
+
+input,
+select {
+  @apply border rounded outline-none px-3 py-2;
+}
+
+button {
+  @apply border rounded outline-none px-3 py-2 transition shadow-sm;
+
+  &:active {
+    @apply scale-95 shadow-none;
   }
 }

@@ -6,6 +6,7 @@ import DebounceInput from "../FormElements/DebounceInput";
 import calculatePagination from "../../utils/calculatePagination";
 import detectQuery from "../../utils/detectQuery";
 import filterData from "../../utils/filterData";
+import Button from "../Button";
 
 export const Headline = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -34,94 +35,138 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
   )
 }
 
-export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loading: boolean, setLoading: (state: boolean) => void; }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+function isSelect(param: string, selected: string[], setSelected: any) {
+  const detectedSelectObj = selected.some((selectObj: any) => selectObj === param);
 
+  if (!detectedSelectObj) {
+    setSelected((prevState: any) => [...prevState, param]);
+  } else {
+    setSelected((prevState: any) => prevState.filter((selectedObj: string) => selectedObj !== param));
+  }
+}
+
+interface TableProps {
+  data?: any[] | any;
+  loading: boolean;
+  selected: string[];
+  setLoading: (state: boolean) => void;
+  setSelected: (state: any) => void;
+}
+
+export const Table = ({
+  data,
+  loading,
+  selected,
+  setLoading,
+  setSelected
+}: TableProps) => {
   function checkedControl(rowParam: string) {
     return selected.some(param => param === rowParam);
-  }
-
-  function isSelect(param: string) {
-    const detectedSelectObj = selected.some((selectObj: any) => selectObj === param);
-
-    if (!detectedSelectObj) {
-      setSelected((prevState: any) => [...prevState, param]);
-    } else {
-      setSelected((prevState: any) => prevState.filter((selectedObj: string) => selectedObj !== param));
-    }
   }
 
   useEffect(() => {
     setLoading(false);
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
-    <div className='table'>
-      <div className='tableHeader'>
-        <span className='col'>Emoji</span>
-        <span className='col'>Code</span>
-        <span className='col'>Name</span>
-        <span className='col'>Native</span>
-        <span className='col'>Capital</span>
-        <span className='col'>Languages</span>
-      </div>
-      <div className='tableBody'>
-        {loading ?
-          <>'loading...'</> :
-          <>
-            {
-              data.length > 0 ?
-                data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
-                  <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => isSelect(name + code)}>
-                    <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
-                    <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
-                    <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
-                    <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
-                    <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
-                    <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
-                      {languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}
-                    </span>
-                  </div>
-                )) :
-                'Data bulunmuyor'
-            }
-          </>
-        }
+    <div className="tableWrap">
+      <div className='table'>
+        <div className='tableHeader'>
+          <span className='col'>Emoji</span>
+          <span className='col'>Code</span>
+          <span className='col'>Name</span>
+          <span className='col'>Native</span>
+          <span className='col'>Capital</span>
+          <span className='col'>Languages</span>
+        </div>
+        <div className='tableBody'>
+          {loading ?
+            <>'loading...'</> :
+            <>
+              {
+                data.length > 0 ?
+                  data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
+                    <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(name + code)}>
+                      <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
+                      <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
+                      <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
+                      <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
+                      <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
+                      <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
+                        {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
+                      </span>
+                    </div>
+                  )) :
+                  'Data bulunmuyor'
+              }
+            </>
+          }
+        </div>
       </div>
     </div>
   )
 }
 
+interface FilterParamsProps {
+  text: string;
+  group: string;
+}
+
+interface FilteredDataProps {
+  __typename: string;
+  emoji: string;
+  code: string;
+  name: string;
+  native: string;
+  capital: string;
+  languages: {
+    __typename: string;
+    code: string;
+  }
+}
+
 const TableContainer = ({ data }: { data: [] }) => {
-  const [filteredData, setFilteredData] = useState<Object[]>([]);
+  const [filteredData, setFilteredData] = useState<FilteredDataProps[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
+  const [filterParams, setFilterParams] = useState<FilterParamsProps>({ text: '', group: 'all' });
 
   const [paginationList, setPaginationList] = useState<Object[]>([]);
   const [paginationCount, setPaginationCount] = useState<number>(1);
   const [currentPagination, setCurrentPagination] = useState<number>(1);
+
+  const [selected, setSelected] = useState<string[]>([]);
 
   useEffect(() => {
     currentPagination > paginationCount && setCurrentPagination(paginationCount);
   }, [paginationCount])
 
   useEffect(() => {
-    console.log(filterLoading);
-  }, [filterLoading])
-
-  useEffect(() => {
     if (data) {
-      setFilteredData(filterData(data, ''))
+      const { text, group } = filterParams;
+      setFilteredData(filterData(data, text, group));
     }
   }, [data])
+
+  useEffect(() => {
+    if (filterParams) {
+      const { text, group } = filterParams;
+      setFilteredData(filterData(data, text, group));
+    }
+  }, [filterParams])
 
   useEffect(() => {
     if (filteredData.length > 0) {
       setPaginationList(filteredData.slice(0, 10));
       setPaginationCount(calculatePagination(filteredData.length, 10))
+
+      if (filteredData.length > 10) {
+        const { name, code }: { name: string, code: string } = filteredData[9];
+        !selected.includes(name+code) && isSelect(name+code, selected, setSelected);
+      } else {
+        const { name, code }: { name: string, code: string } = filteredData[filteredData.length - 1];
+        !selected.includes(name+code) && isSelect(name + code, selected, setSelected);
+      }
+
     }
   }, [filteredData])
 
@@ -131,6 +176,13 @@ const TableContainer = ({ data }: { data: [] }) => {
       setPaginationList(filteredData.slice((detectPagination * 10), (detectPagination * 10) + 10));
     }
   }, [filteredData, currentPagination])
+
+  function changeFilterParams(key: 'group' | 'text', value: string) {
+    setFilterParams((prevState) => ({
+      ...prevState,
+      [key]: value
+    }));
+  }
 
   const options = [
     'All',
@@ -146,14 +198,20 @@ const TableContainer = ({ data }: { data: [] }) => {
     <div className='tableContainer'>
       <Headline>
         <span>
-          <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => setFilteredData(filterData(data, e))} setLoading={(state) => setFilterLoading(state)} />
-          {filterLoading && 'loading...'}
+          <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
+          <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
         </span>
-
-        <SelectOptions options={options} onChange={(data: any) => console.log(data)} />
+        <span>
+          {
+            selected?.length > 0 &&
+            <Button onClick={() => alert(123)}>
+              Selected ({selected.length})
+            </Button>
+          }
+        </span>
       </Headline>
 
-      <Table data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
+      <Table selected={selected} setSelected={(stringData) => isSelect(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
 
       <Footer
         currentPagination={currentPagination}
