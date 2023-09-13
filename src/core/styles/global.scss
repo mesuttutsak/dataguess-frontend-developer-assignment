@@ -10,7 +10,7 @@
 }
 
 body {
-  @apply text-center h-screen w-screen;
+  @apply text-center text-sm;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif
 }
@@ -21,18 +21,18 @@ code {
 }
 
 main {
-  @apply text-center min-h-full min-w-full overflow-auto;
+  @apply text-center h-screen w-screen overflow-auto;
 }
 
 .mainContainer {
-  @apply flex container mx-auto h-full w-full p-5;
+  @apply flex container mx-auto h-full w-full sm:px-5;
 
   & > * {
     @apply w-full;
   }
 
   .table {
-    @apply flex flex-col flex-1 h-full border-y border-[#49494996] overflow-hidden text-sm min-w-[768px];
+    @apply flex flex-col flex-1 h-full border-y border-[#49494996] overflow-hidden min-w-[768px];
 
     .col {
       @apply col-span-3 text-start truncate p-3;
@@ -51,12 +51,12 @@ main {
     }
 
     &Container {
-      @apply m-auto rounded-lg shadow-lg bg-[var(--defaultColors-odd)] border border-slate-100 overflow-auto;
+      @apply flex flex-col flex-auto sm:max-h-[95vh] sm:m-auto rounded-lg shadow-lg bg-[var(--defaultColors-odd)] border border-slate-100 overflow-auto;
     }
 
 
     &Wrap {
-      @apply overflow-auto;
+      @apply h-full sm:h-fit flex overflow-auto;
     }
 
     &Headline {

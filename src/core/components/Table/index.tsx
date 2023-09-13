@@ -6,6 +6,7 @@ import DebounceInput from "../FormElements/DebounceInput";
 import calculatePagination from "../../utils/calculatePagination";
 import detectQuery from "../../utils/detectQuery";
 import filterData from "../../utils/filterData";
+import Button from "../Button";
 
 export const Headline = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -34,9 +35,21 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
   )
 }
 
-export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loading: boolean, setLoading: (state: boolean) => void; }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+interface TableProps {
+  data?: any[] | any;
+  loading: boolean;
+  selected: string[];
+  setLoading: (state: boolean) => void;
+  setSelected: (state: any) => void;
+}
 
+export const Table = ({
+  data,
+  loading,
+  selected,
+  setLoading,
+  setSelected
+ }: TableProps) => {
   function checkedControl(rowParam: string) {
     return selected.some(param => param === rowParam);
   }
@@ -108,6 +121,8 @@ const TableContainer = ({ data }: { data: [] }) => {
   const [paginationCount, setPaginationCount] = useState<number>(1);
   const [currentPagination, setCurrentPagination] = useState<number>(1);
 
+  const [selected, setSelected] = useState<string[]>([]);
+
   useEffect(() => {
     currentPagination > paginationCount && setCurrentPagination(paginationCount);
   }, [paginationCount])
@@ -166,13 +181,16 @@ const TableContainer = ({ data }: { data: [] }) => {
           <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
         </span>
         <span>
-          <button>
-            Selected
-          </button>
+          {
+            selected?.length > 0 &&
+            <Button onClick={() => alert(123)}>
+              Selected ({selected.length})
+            </Button>
+          }
         </span>
       </Headline>
 
-      <Table data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
+      <Table selected={selected} setSelected={setSelected} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
 
       <Footer
         currentPagination={currentPagination}
