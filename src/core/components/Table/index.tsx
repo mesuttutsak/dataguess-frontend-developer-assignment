@@ -35,6 +35,16 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
   )
 }
 
+function isSelect(param: string, selected: string[], setSelected: any) {
+  const detectedSelectObj = selected.some((selectObj: any) => selectObj === param);
+
+  if (!detectedSelectObj) {
+    setSelected((prevState: any) => [...prevState, param]);
+  } else {
+    setSelected((prevState: any) => prevState.filter((selectedObj: string) => selectedObj !== param));
+  }
+}
+
 interface TableProps {
   data?: any[] | any;
   loading: boolean;
@@ -49,19 +59,9 @@ export const Table = ({
   selected,
   setLoading,
   setSelected
- }: TableProps) => {
+}: TableProps) => {
   function checkedControl(rowParam: string) {
     return selected.some(param => param === rowParam);
-  }
-
-  function isSelect(param: string) {
-    const detectedSelectObj = selected.some((selectObj: any) => selectObj === param);
-
-    if (!detectedSelectObj) {
-      setSelected((prevState: any) => [...prevState, param]);
-    } else {
-      setSelected((prevState: any) => prevState.filter((selectedObj: string) => selectedObj !== param));
-    }
   }
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export const Table = ({
               {
                 data.length > 0 ?
                   data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
-                    <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => isSelect(name + code)}>
+                    <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(name + code)}>
                       <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
                       <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
                       <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
@@ -112,8 +112,21 @@ interface FilterParamsProps {
   group: string;
 }
 
+interface FilteredDataProps {
+  __typename: string;
+  emoji: string;
+  code: string;
+  name: string;
+  native: string;
+  capital: string;
+  languages: {
+    __typename: string;
+    code: string;
+  }
+}
+
 const TableContainer = ({ data }: { data: [] }) => {
-  const [filteredData, setFilteredData] = useState<Object[]>([]);
+  const [filteredData, setFilteredData] = useState<FilteredDataProps[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const [filterParams, setFilterParams] = useState<FilterParamsProps>({ text: '', group: 'all' });
 
@@ -134,7 +147,6 @@ const TableContainer = ({ data }: { data: [] }) => {
     }
   }, [data])
 
-
   useEffect(() => {
     if (filterParams) {
       const { text, group } = filterParams;
@@ -146,6 +158,15 @@ const TableContainer = ({ data }: { data: [] }) => {
     if (filteredData.length > 0) {
       setPaginationList(filteredData.slice(0, 10));
       setPaginationCount(calculatePagination(filteredData.length, 10))
+
+      if (filteredData.length > 10) {
+        const { name, code }: { name: string, code: string } = filteredData[9];
+        !selected.includes(name+code) && isSelect(name+code, selected, setSelected);
+      } else {
+        const { name, code }: { name: string, code: string } = filteredData[filteredData.length - 1];
+        !selected.includes(name+code) && isSelect(name + code, selected, setSelected);
+      }
+
     }
   }, [filteredData])
 
@@ -190,7 +211,7 @@ const TableContainer = ({ data }: { data: [] }) => {
         </span>
       </Headline>
 
-      <Table selected={selected} setSelected={setSelected} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
+      <Table selected={selected} setSelected={(stringData) => isSelect(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
 
       <Footer
         currentPagination={currentPagination}
