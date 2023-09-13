@@ -17,12 +17,19 @@ code {
     monospace;
 }
 
+main {
+  @apply text-center h-screen w-screen overflow-hidden;
+}
 
 .mainContainer {
-  @apply text-center h-screen w-screen overflow-hidden;
+  @apply container m-auto;
 
   .table {
-    @apply flex flex-col flex-1 border-b h-full overflow-hidden;
+    @apply flex flex-col flex-1 h-full overflow-hidden;
+
+    &Container {
+      @apply rounded-lg shadow-lg;
+    }
 
     .col {
       @apply col-span-3 text-start truncate p-3;
@@ -40,21 +47,23 @@ code {
       }
     }
 
-    &Header {
-      @apply h-[52px] grid grid-cols-12 grid-flow-col;
+    &Headline {
+      @apply flex flex-row justify-between py-3 px-4;
+    }
 
-      .col {
-        @apply border-b-4;
-      }
+    &Header {
+      @apply px-2 h-[52px] bg-slate-300 grid grid-cols-12 grid-flow-col;
+
+      .col {}
     }
 
     &Body {
       @apply overflow-auto;
       &Row {
-        @apply grid grid-cols-12 grid-flow-col border-b overflow-hidden border-b-2;
+        @apply grid grid-cols-12 grid-flow-col border-b overflow-hidden border-b-2 cursor-pointer px-2;
 
         &.active {
-          @apply bg-red-600 border-red-600 text-white;
+          @apply bg-red-600 text-white;
         }
         .col {
           &:last-child {
