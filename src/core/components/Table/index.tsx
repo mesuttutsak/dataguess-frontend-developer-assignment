@@ -56,37 +56,39 @@ export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loadi
   });
 
   return (
-    <div className='table'>
-      <div className='tableHeader'>
-        <span className='col'>Emoji</span>
-        <span className='col'>Code</span>
-        <span className='col'>Name</span>
-        <span className='col'>Native</span>
-        <span className='col'>Capital</span>
-        <span className='col'>Languages</span>
-      </div>
-      <div className='tableBody'>
-        {loading ?
-          <>'loading...'</> :
-          <>
-            {
-              data.length > 0 ?
-                data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
-                  <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => isSelect(name + code)}>
-                    <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
-                    <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
-                    <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
-                    <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
-                    <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
-                    <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
-                      {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
-                    </span>
-                  </div>
-                )) :
-                'Data bulunmuyor'
-            }
-          </>
-        }
+    <div className="tableWrap">
+      <div className='table'>
+        <div className='tableHeader'>
+          <span className='col'>Emoji</span>
+          <span className='col'>Code</span>
+          <span className='col'>Name</span>
+          <span className='col'>Native</span>
+          <span className='col'>Capital</span>
+          <span className='col'>Languages</span>
+        </div>
+        <div className='tableBody'>
+          {loading ?
+            <>'loading...'</> :
+            <>
+              {
+                data.length > 0 ?
+                  data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
+                    <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => isSelect(name + code)}>
+                      <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
+                      <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
+                      <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
+                      <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
+                      <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
+                      <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
+                        {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
+                      </span>
+                    </div>
+                  )) :
+                  'Data bulunmuyor'
+              }
+            </>
+          }
+        </div>
       </div>
     </div>
   )
@@ -159,8 +161,15 @@ const TableContainer = ({ data }: { data: [] }) => {
   return (
     <div className='tableContainer'>
       <Headline>
-        <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
-        <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
+        <span>
+          <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
+          <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
+        </span>
+        <span>
+          <button>
+            Selected
+          </button>
+        </span>
       </Headline>
 
       <Table data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />

@@ -1,0 +1,10 @@
+{
+    "defaultColors": {
+        "odd": "#FFFFFF",
+        "even": "#e7eae796"
+    },
+    "activeColors": {
+        "odd": "#f4d9d9",
+        "even": "#cdd9e9"
+    }
+}
