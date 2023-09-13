@@ -7,14 +7,13 @@ import TableContainer from './core/components/Table';
 const GET_COUNTRIES = gql`
 query Query {
   countries {
-    name
+    emoji
     code
+    name
     native
     capital
-    emoji
     languages {
       code
-      name
     }
   } 
 }

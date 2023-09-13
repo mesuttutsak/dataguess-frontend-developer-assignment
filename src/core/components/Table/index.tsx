@@ -55,10 +55,6 @@ export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loadi
     setLoading(false);
   });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   return (
     <div className='table'>
       <div className='tableHeader'>
@@ -83,7 +79,7 @@ export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loadi
                     <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
                     <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
                     <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
-                      {languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}
+                      {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
                     </span>
                   </div>
                 )) :
@@ -96,9 +92,15 @@ export const Table = ({ data, loading, setLoading }: { data?: any[] | any, loadi
   )
 }
 
+interface FilterParamsProps {
+  text: string;
+  group: string;
+}
+
 const TableContainer = ({ data }: { data: [] }) => {
   const [filteredData, setFilteredData] = useState<Object[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
+  const [filterParams, setFilterParams] = useState<FilterParamsProps>({ text: '', group: 'all' });
 
   const [paginationList, setPaginationList] = useState<Object[]>([]);
   const [paginationCount, setPaginationCount] = useState<number>(1);
@@ -109,14 +111,19 @@ const TableContainer = ({ data }: { data: [] }) => {
   }, [paginationCount])
 
   useEffect(() => {
-    console.log(filterLoading);
-  }, [filterLoading])
-
-  useEffect(() => {
     if (data) {
-      setFilteredData(filterData(data, ''))
+      const { text, group } = filterParams;
+      setFilteredData(filterData(data, text, group));
     }
   }, [data])
+
+
+  useEffect(() => {
+    if (filterParams) {
+      const { text, group } = filterParams;
+      setFilteredData(filterData(data, text, group));
+    }
+  }, [filterParams])
 
   useEffect(() => {
     if (filteredData.length > 0) {
@@ -132,6 +139,13 @@ const TableContainer = ({ data }: { data: [] }) => {
     }
   }, [filteredData, currentPagination])
 
+  function changeFilterParams(key: 'group' | 'text', value: string) {
+    setFilterParams((prevState) => ({
+      ...prevState,
+      [key]: value
+    }));
+  }
+
   const options = [
     'All',
     'Emoji',
@@ -145,12 +159,8 @@ const TableContainer = ({ data }: { data: [] }) => {
   return (
     <div className='tableContainer'>
       <Headline>
-        <span>
-          <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => setFilteredData(filterData(data, e))} setLoading={(state) => setFilterLoading(state)} />
-          {filterLoading && 'loading...'}
-        </span>
-
-        <SelectOptions options={options} onChange={(data: any) => console.log(data)} />
+        <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
+        <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
       </Headline>
 
       <Table data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />

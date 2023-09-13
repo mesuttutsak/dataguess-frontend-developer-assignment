@@ -52,19 +52,25 @@ main {
     }
 
     &Header {
-      @apply px-2 h-[52px] bg-slate-300 grid grid-cols-12 grid-flow-col;
+      @apply px-2 h-[52px] bg-slate-100 grid grid-cols-12 grid-flow-col;
 
       .col {}
     }
 
     &Body {
       @apply overflow-auto;
+
       &Row {
-        @apply grid grid-cols-12 grid-flow-col border-b overflow-hidden border-b-2 cursor-pointer px-2;
+        @apply grid grid-cols-12 grid-flow-col border-b border-slate-100 overflow-hidden border-b-2 cursor-pointer px-2;
+
+        &:hover {
+          @apply bg-slate-50
+        }
 
         &.active {
           @apply bg-red-600 text-white;
         }
+
         .col {
           &:last-child {
             @apply border-none;
@@ -72,7 +78,7 @@ main {
         }
       }
     }
-    
+
     &Footer {
       @apply h-[52px] flex items-center justify-center gap-4;
     }
@@ -80,8 +86,14 @@ main {
 }
 
 button {
-  @apply flex items-center justify-center bg-slate-400 text-slate-100 py-1 px-2 rounded;
+  @apply flex items-center justify-center text-slate-600 rounded;
+
   &:disabled {
     @apply opacity-50 cursor-not-allowed;
   }
+}
+
+input,
+select {
+  @apply border rounded outline-none px-3 py-2;
 }
