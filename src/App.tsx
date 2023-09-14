@@ -52,8 +52,6 @@ function App() {
 
   return (<>
     <Layout>
-
-
       <div className="mainContainer">
         {
           loading ? <p>Loading...</p> :

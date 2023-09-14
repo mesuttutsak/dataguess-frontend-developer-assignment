@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface DebounceInputProps {
+    id: string;
     value?: string | undefined;
     debounce?: number;
     placeholder?: string;
@@ -9,11 +10,7 @@ interface DebounceInputProps {
     setLoading: (state: boolean) => void;
 }
 
-interface DebounceInputProps {
-    onInputValue: (value: string) => void;
-}
-
-const DebounceInput: React.FC<DebounceInputProps> = ( { value: initialValue, debounce = 750, placeholder = "", type = 'text', onInputValue, setLoading }: DebounceInputProps ) => {
+const DebounceInput: React.FC<DebounceInputProps> = ( {id, value: initialValue, debounce = 750, placeholder = "", type = 'text', onInputValue, setLoading }: DebounceInputProps ) => {
     const [inputValue, setInputValue] = useState<string>('');
 
     useEffect(() => {
@@ -31,7 +28,7 @@ const DebounceInput: React.FC<DebounceInputProps> = ( { value: initialValue, deb
     }, [inputValue]);
 
     return (
-        <input defaultValue={initialValue} type={type} placeholder={placeholder} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} />
+        <input id={id} defaultValue={initialValue} type={type} placeholder={placeholder} onInput={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)} />
     );
 };
 
