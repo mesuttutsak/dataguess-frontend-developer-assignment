@@ -86,7 +86,7 @@ export const Table = ({
               {
                 data.length > 0 ?
                   data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
-                    <div className={'tableBodyRow ' + `${checkedControl(name + code) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(name + code)}>
+                    <div className={'tableBodyRow ' + `${checkedControl(`${name} (${code})`) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(`${name} (${code})`)}>
                       <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
                       <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
                       <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
@@ -161,10 +161,10 @@ const TableContainer = ({ data }: { data: [] }) => {
 
       if (filteredData.length > 10) {
         const { name, code }: { name: string, code: string } = filteredData[9];
-        !selected.includes(name+code) && isSelect(name+code, selected, setSelected);
+        !selected.includes(`${name} (${code})`) && isSelect(`${name} (${code})`, selected, setSelected);
       } else {
         const { name, code }: { name: string, code: string } = filteredData[filteredData.length - 1];
-        !selected.includes(name+code) && isSelect(name + code, selected, setSelected);
+        !selected.includes(`${name} (${code})`) && isSelect(`${name} (${code})`, selected, setSelected);
       }
 
     }
@@ -204,7 +204,7 @@ const TableContainer = ({ data }: { data: [] }) => {
         <span>
           {
             selected?.length > 0 &&
-            <Button onClick={() => alert(123)}>
+            <Button onClick={() => alert(selected.map((item:string) => item).join(', '))}>
               Selected ({selected.length})
             </Button>
           }
