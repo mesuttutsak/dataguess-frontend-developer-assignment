@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 
 import { useDispatch } from 'react-redux';
-import { setModalContentAction, toggleModalAction } from '../../store';
+import { setModalContentAction, setModalTitle, toggleModalAction } from '../../store';
 
 import SelectOptions from "../FormElements/SelectOptions";
 import DebounceInput from "../FormElements/DebounceInput";
@@ -143,15 +143,18 @@ const TableContainer = ({ data }: { data: [] }) => {
   const [currentPagination, setCurrentPagination] = useState<number>(1);
 
   const [selected, setSelected] = useState<string[]>([]);
+  const [selectedHTMLtems, setSelectedHTMLtems] = useState<React.ReactNode>(<></>);
 
   const handleModalControl = () => {
     dispatch(toggleModalAction());
+    dispatch(setModalContentAction(selectedHTMLtems));
+    dispatch(setModalTitle(`Selected ${selected.length > 1 ? 'Countries' : 'Country'}`));
   };
 
   useEffect(() => {
     if (selected.length > 0) {
       const selectedİtems = <div className="selectedList"><ul>{selected.map((item: string, index: number) => <li key={item + index}>{item}</li>)}</ul></div>;
-      dispatch(setModalContentAction(selectedİtems));
+      setSelectedHTMLtems(selectedİtems)
     }
   }, [selected])
 
