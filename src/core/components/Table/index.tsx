@@ -14,6 +14,8 @@ import Button from "../Button";
 import FormGroup from "../FormGroup";
 import Label from "../Label";
 import onSelectTable from "../../utils/onSelectTable";
+import State from "../State";
+import Loader from "../Loader";
 
 export const Headline = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -43,7 +45,7 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
 }
 
 interface TableProps {
-  data: any[] | any;
+  data: any[] | undefined;
   tableColNames: string[];
   loading: boolean;
   selected: string[];
@@ -63,6 +65,12 @@ export const Table = ({
     return selected.some(param => param === rowParam);
   }
 
+  const [isFirstRendered, setIsFirstRendered] = useState(false);
+
+  useEffect(() => {
+    setIsFirstRendered(true);
+  }, [])
+
   useEffect(() => {
     setLoading(false);
   });
@@ -71,27 +79,31 @@ export const Table = ({
     <div className="tableWrap">
       <div className='table'>
         <div className='tableHeader'>
-        {tableColNames.filter((name: string) => name.toLocaleLowerCase() !== 'all').map((name:string, i:number) => <span key={name+i} className='col' title={name}>{name}</span> )}
+          {tableColNames.filter((name: string) => name.toLocaleLowerCase() !== 'all').map((name: string, i: number) => <span key={name + i} className='col' title={name}>{name}</span>)}
         </div>
         <div className='tableBody'>
-          {loading ?
-            <>'loading...'</> :
-            <>
-              {
-                data.length > 0 ?
-                  data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
-                    <div className={'tableBodyRow ' + `${checkedControl(`${name} (${code})`) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(`${name} (${code})`)}>
-                      <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
-                      <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
-                      <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
-                      <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
-                      <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
-                      <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
-                        {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
-                      </span>
-                    </div>
-                  )) :
-                  'Data bulunmuyor'
+          {
+            data && <>
+
+              {loading ?
+                <Loader /> :
+                <>
+                  {
+                    data?.length > 0 ?
+                      data.map(({ code, name, emoji, native, capital, currency, languages }: any, index: number) => (
+                        <div className={'tableBodyRow ' + `${checkedControl(`${name} (${code})`) ? 'active' : ''}`} key={index.toString() + code} onClick={() => setSelected(`${name} (${code})`)}>
+                          <span className='col' title={detectQuery(emoji)}>{detectQuery(emoji)}</span>
+                          <span className='col' title={detectQuery(code)}>{detectQuery(code)}</span>
+                          <span className='col' title={detectQuery(name)}>{detectQuery(name)}</span>
+                          <span className='col' title={detectQuery(native)}>{detectQuery(native)}</span>
+                          <span className='col' title={detectQuery(capital)}>{detectQuery(capital)}</span>
+                          <span className='col' title={languages.map((language: { code: string }) => detectQuery(language.code)).join(', ')}>
+                            {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
+                          </span>
+                        </div>
+                      )) : isFirstRendered && <State theme={'warning'}>Data not found.</State>
+                  }
+                </>
               }
             </>
           }
@@ -138,7 +150,7 @@ const TableContainer = ({ data }: { data: [] }) => {
 
   useEffect(() => {
     if (selected.length > 0) {
-      const selectedİtems = <div className="selectedList"><ul>{selected.map((item: string, index:number) => <li key={item+index}>{item}</li>)}</ul></div>;
+      const selectedİtems = <div className="selectedList"><ul>{selected.map((item: string, index: number) => <li key={item + index}>{item}</li>)}</ul></div>;
       dispatch(setModalContentAction(selectedİtems));
     }
   }, [selected])
@@ -173,7 +185,8 @@ const TableContainer = ({ data }: { data: [] }) => {
         const { name, code }: { name: string, code: string } = filteredData[filteredData.length - 1];
         !selected.includes(`${name} (${code})`) && onSelectTable(`${name} (${code})`, selected, setSelected);
       }
-
+    } else {
+      setPaginationCount(1)
     }
   }, [filteredData])
 

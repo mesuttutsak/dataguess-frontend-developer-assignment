@@ -6,6 +6,8 @@ import TableContainer from './core/components/Table';
 import { useEffect } from 'react';
 
 import tableColors from "./core/json/tableColors.json";
+import Loader from './core/components/Loader';
+import State from './core/components/State';
 
 const GET_COUNTRIES = gql`
 query Query {
@@ -44,7 +46,7 @@ function App() {
           );
         }
       });
-      
+
     });
   }, [])
 
@@ -54,9 +56,9 @@ function App() {
     <Layout>
       <div className="mainContainer">
         {
-          loading ? <p>Loading...</p> :
-            error ? <p>Error : {error.message}</p> :
-              <TableContainer data={data.countries} />
+          loading ? <Loader/> :
+            error ?  <State theme={'warning'}>Error message: {error.message}</State> :
+            <TableContainer data={data.countries} />
         }
       </div>
     </Layout>
