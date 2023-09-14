@@ -134,9 +134,19 @@ button {
 
 input,
 select {
-  @apply border rounded outline-0 px-3 py-2 text-sm;
+  @apply border rounded outline-0 py-2 text-sm;
   line-height: 20px;
+}
+
+input {
+  @apply px-3;
   min-width: 115px;
+}
+
+select {
+  @apply pl-2 pr-1;
+  min-width: 50px;
+  max-width: 115px;
 }
 
 button {
@@ -193,9 +203,15 @@ button {
           @apply flex flex-col;
 
           li {
-            @apply flex flex-row justify-start px-3 py-2 border-b;
+            @apply flex flex-row justify-start items-center px-3 py-2 gap-2 border-b;
             background: var(--defaultColors-even);
 
+            .removeBtn {
+              @apply border rounded-full border-gray-300 text-gray-300;
+              height: 16px;
+              width: 16px;
+              &:hover {@apply border-red-300 text-red-300 font-bold border-2;}
+            }
             &:nth-child(odd) {
               background: var(--defaultColors-odd);
             }

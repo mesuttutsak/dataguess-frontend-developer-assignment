@@ -16,13 +16,13 @@ const SelectOptions: React.FC<SelectOptionsProps> = ({ id, options, onChange }) 
     };
 
     return (
-        <select id={id} value={selectedOption} onChange={handleOptionChange}>
-            {options.map((option) => (
-                <option key={option} value={option}>
-                    {option}
-                </option>
-            ))}
-        </select>
+            <select id={id} value={selectedOption} onChange={handleOptionChange}>
+                {options.map((option) => (
+                    <option key={option} value={option}>
+                        {option}
+                    </option>
+                ))}
+            </select>
     );
 };
 export default SelectOptions;

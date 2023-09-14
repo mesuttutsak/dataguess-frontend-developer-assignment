@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setModalContentAction, setModalTitle, toggleModalAction } from '../../store';
 
 import SelectOptions from "../FormElements/SelectOptions";
@@ -101,7 +101,7 @@ export const Table = ({
                             {languages.map((language: { code: string }) => detectQuery(language.code).toUpperCase()).join(', ')}
                           </span>
                         </div>
-                      )) : isFirstRendered && <State theme={'warning'}>Data not found.</State>
+                      )) : isFirstRendered && <State theme={'warning'}>Search result: Data not found.</State>
                   }
                 </>
               }
@@ -133,6 +133,7 @@ interface FilteredDataProps {
 
 const TableContainer = ({ data }: { data: [] }) => {
   const dispatch = useDispatch();
+  const isOpenModal = useSelector((state: any) => state.isOpenModal);
 
   const [filteredData, setFilteredData] = useState<FilteredDataProps[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
@@ -152,10 +153,22 @@ const TableContainer = ({ data }: { data: [] }) => {
   };
 
   useEffect(() => {
-    if (selected.length > 0) {
-      const selectedİtems = <div className="selectedList"><ul>{selected.map((item: string, index: number) => <li key={item + index}>{item}</li>)}</ul></div>;
-      setSelectedHTMLtems(selectedİtems)
-    }
+     dispatch(setModalContentAction(selectedHTMLtems));
+    selected.length === 0 && isOpenModal && dispatch(toggleModalAction());
+  }, [selectedHTMLtems])
+
+  useEffect(() => {
+    const selectedİtems = (
+      <div className="selectedList">
+        <ul>{selected?.map((item: string, index: number) =>
+          <li key={item + index}>
+            <Button className={['removeBtn']} theme="icon" onClick={() => onSelectTable(item, selected, setSelected)}>-</Button> <span>{item}</span>
+          </li>)}
+        </ul>
+      </div>
+    );
+
+    setSelectedHTMLtems(selectedİtems);
   }, [selected])
 
   useEffect(() => {
@@ -222,12 +235,13 @@ const TableContainer = ({ data }: { data: [] }) => {
       <Headline>
         <div className="left">
           <FormGroup>
-            <Label htmlFor={'asdsad'}>Filter Text: </Label>
-            <DebounceInput id={'asdsad'} placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
+            <Label htmlFor={'searchInput'}>Search:</Label>
+            <DebounceInput id={'searchInput'} placeholder={"Enter search text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
           </FormGroup>
-
           <FormGroup>
-            <Label htmlFor="groupSelect">Group:</Label>
+            <span>-</span>
+          </FormGroup>
+          <FormGroup>
             <SelectOptions id={'groupSelect'} options={options} onChange={(state: string) => changeFilterParams('group', state)} />
           </FormGroup>
         </div>
