@@ -1,11 +1,12 @@
 import { useState } from "react";
 
 interface SelectOptionsProps {
+    id: string;
     options: string[];
     onChange: (selectedOption: string) => void;
 }
 
-const SelectOptions: React.FC<SelectOptionsProps> = ({ options, onChange }) => {
+const SelectOptions: React.FC<SelectOptionsProps> = ({ id, options, onChange }) => {
     const [selectedOption, setSelectedOption] = useState(options[0]);
 
     const handleOptionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -15,7 +16,7 @@ const SelectOptions: React.FC<SelectOptionsProps> = ({ options, onChange }) => {
     };
 
     return (
-        <select value={selectedOption} onChange={handleOptionChange}>
+        <select id={id} value={selectedOption} onChange={handleOptionChange}>
             {options.map((option) => (
                 <option key={option} value={option}>
                     {option}

@@ -55,7 +55,19 @@ main {
     }
 
     &Headline {
-      @apply flex flex-row justify-between py-3 px-4;
+      @apply flex flex-wrap justify-between gap-3 py-3 px-4;
+
+      .left {
+        @apply flex flex-wrap gap-3;  
+      }
+
+      .right {
+        @apply flex items-end;  
+
+        button {
+          @apply whitespace-nowrap;
+        }
+      }
     }
 
     &Header {
@@ -107,7 +119,7 @@ button {
 
 input,
 select {
-  @apply border rounded outline-none px-3 py-2;
+  @apply border rounded outline-0 px-3 py-2 text-sm leading-[20px] min-w-[115px];
 }
 
 button {
@@ -115,5 +127,17 @@ button {
 
   &:active {
     @apply scale-95 shadow-none;
+  }
+}
+
+.fromGroup {
+  @apply flex row-auto items-center justify-start;
+
+  * {
+    color: rgb(17 24 39);
+  }
+
+  label {
+    @apply pr-2 whitespace-nowrap;
   }
 }

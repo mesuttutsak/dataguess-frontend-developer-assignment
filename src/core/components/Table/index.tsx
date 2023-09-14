@@ -7,6 +7,9 @@ import calculatePagination from "../../utils/calculatePagination";
 import detectQuery from "../../utils/detectQuery";
 import filterData from "../../utils/filterData";
 import Button from "../Button";
+import FormGroup from "../FormGroup";
+import Label from "../Label";
+import onSelectTable from "../../utils/onSelectTable";
 
 export const Headline = ({ children }: { children?: React.ReactNode }) => {
   return (
@@ -33,16 +36,6 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
       <button onClick={() => goToPage('lastPage', currentPagination)} disabled={!(currentPagination !== paginationCount)}>{'>>'}</button>
     </div>
   )
-}
-
-function isSelect(param: string, selected: string[], setSelected: any) {
-  const detectedSelectObj = selected.some((selectObj: any) => selectObj === param);
-
-  if (!detectedSelectObj) {
-    setSelected((prevState: any) => [...prevState, param]);
-  } else {
-    setSelected((prevState: any) => prevState.filter((selectedObj: string) => selectedObj !== param));
-  }
 }
 
 interface TableProps {
@@ -161,10 +154,10 @@ const TableContainer = ({ data }: { data: [] }) => {
 
       if (filteredData.length > 10) {
         const { name, code }: { name: string, code: string } = filteredData[9];
-        !selected.includes(`${name} (${code})`) && isSelect(`${name} (${code})`, selected, setSelected);
+        !selected.includes(`${name} (${code})`) && onSelectTable(`${name} (${code})`, selected, setSelected);
       } else {
         const { name, code }: { name: string, code: string } = filteredData[filteredData.length - 1];
-        !selected.includes(`${name} (${code})`) && isSelect(`${name} (${code})`, selected, setSelected);
+        !selected.includes(`${name} (${code})`) && onSelectTable(`${name} (${code})`, selected, setSelected);
       }
 
     }
@@ -197,21 +190,28 @@ const TableContainer = ({ data }: { data: [] }) => {
   return (
     <div className='tableContainer'>
       <Headline>
-        <span>
-          <DebounceInput placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
-          <SelectOptions options={options} onChange={(state: string) => changeFilterParams('group', state)} />
-        </span>
-        <span>
+        <div className="left">
+          <FormGroup>
+            <Label htmlFor={'asdsad'}>Filter Text: </Label>
+            <DebounceInput id={'asdsad'} placeholder={"Enter filter text"} onInputValue={(e: string) => changeFilterParams('text', e)} setLoading={(state) => setFilterLoading(state)} />
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="groupSelect">Group:</Label>
+            <SelectOptions id={'groupSelect'} options={options} onChange={(state: string) => changeFilterParams('group', state)} />
+          </FormGroup>
+        </div>
+        <div className="right">
           {
             selected?.length > 0 &&
-            <Button onClick={() => alert(selected.map((item:string) => item).join(', '))}>
+            <Button onClick={() => alert(selected.map((item: string) => item).join(', '))}>
               Selected ({selected.length})
             </Button>
           }
-        </span>
+        </div>
       </Headline>
 
-      <Table selected={selected} setSelected={(stringData) => isSelect(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
+      <Table selected={selected} setSelected={(stringData) => onSelectTable(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
 
       <Footer
         currentPagination={currentPagination}
