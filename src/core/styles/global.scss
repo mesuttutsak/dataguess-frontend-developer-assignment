@@ -123,7 +123,9 @@ button {
 
 input,
 select {
-  @apply border rounded outline-0 px-3 py-2 text-sm leading-[20px] min-w-[115px];
+  @apply border rounded outline-0 px-3 py-2 text-sm;
+  line-height: 20px;
+  min-width: 115px;
 }
 
 button {
@@ -150,19 +152,20 @@ button {
   @apply opacity-0 pointer-events-none absolute top-0 z-40 h-screen w-screen;
 
   &Backdrop {
-    @apply z-40 h-full w-full bg-black/5;
+    @apply z-40 h-full w-full cursor-pointer bg-black/60;
   }
 
   &Content {
-    @apply flex flex-col flex-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white shadow ;
+    @apply flex flex-col flex-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md overflow-hidden bg-white shadow ;
+    width: 580px;
     min-width: 40vw;
-    max-width: 95vh;
+    max-width: 90vw;
 
     min-height: 40vh;
     max-height: 90vh;
 
     &Headline {
-      @apply flex flex-row justify-between items-center px-3 py-2 border-b;
+      @apply flex bg-[#b7bcb5] flex-row justify-between items-center px-3 py-2 border-b;
 
       .title {
         @apply text-lg font-bold;
@@ -170,7 +173,23 @@ button {
     }
 
     &Body {
-      @apply flex flex-1 min-h-full p-3;
+      @apply flex flex-1 overflow-auto min-h-full;
+
+      .selectedList {
+        @apply w-full;
+        ul {
+          @apply flex flex-col;
+          li {
+            @apply flex flex-row justify-start px-3 py-2 border-b;
+            background: var(--defaultColors-even);
+
+            &:nth-child(odd) {
+              background: var(--defaultColors-odd);
+            }
+    
+          }
+        }
+      }
     }
   }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 
 import { useDispatch } from 'react-redux';
-import { toggleModalAction } from '../../store';
+import { setModalContentAction, toggleModalAction } from '../../store';
 
 import SelectOptions from "../FormElements/SelectOptions";
 import DebounceInput from "../FormElements/DebounceInput";
@@ -43,7 +43,8 @@ export const Footer = ({ currentPagination, paginationCount, setCurrentPaginatio
 }
 
 interface TableProps {
-  data?: any[] | any;
+  data: any[] | any;
+  tableColNames: string[];
   loading: boolean;
   selected: string[];
   setLoading: (state: boolean) => void;
@@ -52,6 +53,7 @@ interface TableProps {
 
 export const Table = ({
   data,
+  tableColNames,
   loading,
   selected,
   setLoading,
@@ -69,12 +71,7 @@ export const Table = ({
     <div className="tableWrap">
       <div className='table'>
         <div className='tableHeader'>
-          <span className='col'>Emoji</span>
-          <span className='col'>Code</span>
-          <span className='col'>Name</span>
-          <span className='col'>Native</span>
-          <span className='col'>Capital</span>
-          <span className='col'>Languages</span>
+        {tableColNames.filter((name: string) => name.toLocaleLowerCase() !== 'all').map((name:string, i:number) => <span key={name+i} className='col' title={name}>{name}</span> )}
         </div>
         <div className='tableBody'>
           {loading ?
@@ -138,6 +135,13 @@ const TableContainer = ({ data }: { data: [] }) => {
   const handleModalControl = () => {
     dispatch(toggleModalAction());
   };
+
+  useEffect(() => {
+    if (selected.length > 0) {
+      const selectedİtems = <div className="selectedList"><ul>{selected.map((item: string, index:number) => <li key={item+index}>{item}</li>)}</ul></div>;
+      dispatch(setModalContentAction(selectedİtems));
+    }
+  }, [selected])
 
   useEffect(() => {
     currentPagination > paginationCount && setCurrentPagination(paginationCount);
@@ -214,7 +218,6 @@ const TableContainer = ({ data }: { data: [] }) => {
         <div className="right">
           {
             selected?.length > 0 &&
-            // <Button onClick={() => alert(selected.map((item: string) => item).join(', '))}>
             <Button onClick={handleModalControl}>
               Selected ({selected.length})
             </Button>
@@ -222,7 +225,7 @@ const TableContainer = ({ data }: { data: [] }) => {
         </div>
       </Headline>
 
-      <Table selected={selected} setSelected={(stringData) => onSelectTable(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
+      <Table tableColNames={options} selected={selected} setSelected={(stringData) => onSelectTable(stringData, selected, setSelected)} data={paginationList} loading={filterLoading} setLoading={(state) => setFilterLoading(state)} />
 
       <Footer
         currentPagination={currentPagination}

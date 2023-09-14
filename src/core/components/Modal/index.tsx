@@ -16,7 +16,7 @@ const Modal = ({ children, isOpen }: ModalProps) => {
     };
     return (
         <div className={`modal ${isOpen ? 'open' : 'close'}`}>
-            <div className='modalBackdrop'></div>
+            <div className='modalBackdrop' onClick={() => handleModalControl()}></div>
             <div className='modalContent'>
                 <div className='modalContentHeadline'>
                     <h2 className='title'>Deneme</h2>
