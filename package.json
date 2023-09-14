@@ -11,6 +11,7 @@
     "@types/node": "^16.18.50",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
+    "@types/redux": "^3.6.0",
     "graphql": "^16.8.0",
     "graphql.macro": "^1.4.2",
     "react": "^18.2.0",

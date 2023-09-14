@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 
+
+import { useDispatch } from 'react-redux';
+import { toggleModalAction } from '../../store';
+
 import SelectOptions from "../FormElements/SelectOptions";
 import DebounceInput from "../FormElements/DebounceInput";
 
@@ -119,6 +123,8 @@ interface FilteredDataProps {
 }
 
 const TableContainer = ({ data }: { data: [] }) => {
+  const dispatch = useDispatch();
+
   const [filteredData, setFilteredData] = useState<FilteredDataProps[]>([]);
   const [filterLoading, setFilterLoading] = useState<boolean>(false);
   const [filterParams, setFilterParams] = useState<FilterParamsProps>({ text: '', group: 'all' });
@@ -128,6 +134,10 @@ const TableContainer = ({ data }: { data: [] }) => {
   const [currentPagination, setCurrentPagination] = useState<number>(1);
 
   const [selected, setSelected] = useState<string[]>([]);
+
+  const handleModalControl = () => {
+    dispatch(toggleModalAction());
+  };
 
   useEffect(() => {
     currentPagination > paginationCount && setCurrentPagination(paginationCount);
@@ -204,7 +214,8 @@ const TableContainer = ({ data }: { data: [] }) => {
         <div className="right">
           {
             selected?.length > 0 &&
-            <Button onClick={() => alert(selected.map((item: string) => item).join(', '))}>
+            // <Button onClick={() => alert(selected.map((item: string) => item).join(', '))}>
+            <Button onClick={handleModalControl}>
               Selected ({selected.length})
             </Button>
           }

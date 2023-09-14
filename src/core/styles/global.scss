@@ -112,6 +112,10 @@ main {
 button {
   @apply flex items-center justify-center text-slate-600 rounded;
 
+  &.icon {
+    @apply border-0 shadow-none p-0 leading-none font-bold;
+  }
+
   &:disabled {
     @apply opacity-50 cursor-not-allowed;
   }
@@ -139,5 +143,38 @@ button {
 
   label {
     @apply pr-2 whitespace-nowrap;
+  }
+}
+
+.modal {
+  @apply opacity-0 pointer-events-none absolute top-0 z-40 h-screen w-screen;
+
+  &Backdrop {
+    @apply z-40 h-full w-full bg-black/5;
+  }
+
+  &Content {
+    @apply flex flex-col flex-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md bg-white shadow ;
+    min-width: 40vw;
+    max-width: 95vh;
+
+    min-height: 40vh;
+    max-height: 90vh;
+
+    &Headline {
+      @apply flex flex-row justify-between items-center px-3 py-2 border-b;
+
+      .title {
+        @apply text-lg font-bold;
+      }
+    }
+
+    &Body {
+      @apply flex flex-1 min-h-full p-3;
+    }
+  }
+
+  &.open {
+    @apply opacity-100 pointer-events-auto;
   }
 }
